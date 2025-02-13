@@ -505,6 +505,12 @@ class BaseModelMixin(PreTrainedModelMixin):
                     max_position_embeddings=max_position_embeddings,
                     base=self.config.rope_theta,
                 )
+            elif self.config.rope_scaling == "abf":
+                self.rope = ABFScaledRoPE(
+                    self.head_dim,
+                    max_position_embeddings=max_position_embeddings,
+                    base=self.config.rope_theta,
+                )
             else:
                 self.rope = YaRNScaledRoPE(
                     self.head_dim,
