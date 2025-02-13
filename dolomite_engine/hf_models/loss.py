@@ -37,18 +37,18 @@ def get_autoregressive_language_modeling_loss(
 
     loss_context = nullcontext
 
-    if ProcessGroupManager.is_initialized() and ProcessGroupManager.is_tensor_parallel_enabled():
-        tp_mesh = ProcessGroupManager.get_tensor_parallel_mesh()
+    # if ProcessGroupManager.is_initialized() and ProcessGroupManager.is_tensor_parallel_enabled():
+    #     tp_mesh = ProcessGroupManager.get_tensor_parallel_mesh()
 
-        shift_logits = tensor_to_dtensor(
-            shift_logits,
-            device_mesh=tp_mesh,
-            current_placement=Shard(-1) if tensor_parallel_word_embeddings else Replicate(),
-        )
-        shift_labels = tensor_to_dtensor(shift_labels, device_mesh=tp_mesh, current_placement=Replicate())
+    #     shift_logits = tensor_to_dtensor(
+    #         shift_logits,
+    #         device_mesh=tp_mesh,
+    #         current_placement=Shard(-1) if tensor_parallel_word_embeddings else Replicate(),
+    #     )
+    #     shift_labels = tensor_to_dtensor(shift_labels, device_mesh=tp_mesh, current_placement=Replicate())
 
-        if tensor_parallel_word_embeddings:
-            loss_context = loss_parallel
+    #     if tensor_parallel_word_embeddings:
+    #         loss_context = loss_parallel
 
     if upcast_logits_for_loss:
         shift_logits = shift_logits.float()
