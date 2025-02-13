@@ -8,7 +8,7 @@ from transformers.modeling_outputs import BaseModelOutputWithPast
 from ....utils import divide_if_divisible
 from ...config import CommonConfig
 from ...enums import AttentionHeadType, PositionEmbeddingType
-from ...modeling_utils import Alibi, ParameterizedEmbedding, RoPE, YaRNScaledRoPE, get_normalization_function
+from ...modeling_utils import Alibi, ParameterizedEmbedding, RoPE, ABFScaledRoPE, YaRNScaledRoPE, get_normalization_function
 from ...utils import convert_padding_free_lists_to_tensors
 
 
