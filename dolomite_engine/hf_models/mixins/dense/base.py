@@ -32,7 +32,7 @@ class PreTrainedModelMixin(PreTrainedModel, GenerationMixin):
 
         assert self.config_class is not None
 
-        self.attention_implementation = self.config._attn_implementation
+        self.attention_implementation = "sdpa"  #self.config._attn_implementation
         self._use_eager_attention = self.attention_implementation == "eager"
         self._use_sdpa = self.attention_implementation == "sdpa"
         self._use_flash_attention_2 = self.attention_implementation == "flash_attention_2"
