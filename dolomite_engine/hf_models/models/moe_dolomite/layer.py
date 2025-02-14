@@ -50,34 +50,34 @@ class MoEDolomiteBlock(nn.Module):
         output_router_logits: bool = False,
         output_aux_loss: bool = True,
     ) -> tuple[torch.Tensor]:
-        residual = hidden_states
-        hidden_states = self.ln_1(hidden_states)
+        # residual = hidden_states
+        # hidden_states = self.ln_1(hidden_states)
 
-        hidden_states = self.attn(
-            hidden_states,
-            past_key_values=past_key_values,
-            attention_mask=attention_mask,
-            rope_cos_sin=rope_cos_sin,
-            cu_seqlens=cu_seqlens,
-            max_seqlen=max_seqlen,
-        )
+        # hidden_states = self.attn(
+        #     hidden_states,
+        #     past_key_values=past_key_values,
+        #     attention_mask=attention_mask,
+        #     rope_cos_sin=rope_cos_sin,
+        #     cu_seqlens=cu_seqlens,
+        #     max_seqlen=max_seqlen,
+        # )
 
-        if self.m_residual is not None:
-            hidden_states = hidden_states * self.m_residual
+        # if self.m_residual is not None:
+        #     hidden_states = hidden_states * self.m_residual
 
-        # residual connection
-        hidden_states = hidden_states + residual
+        # # residual connection
+        # hidden_states = hidden_states + residual
 
-        residual = hidden_states
-        hidden_states = self.ln_2(hidden_states)
+        # residual = hidden_states
+        # hidden_states = self.ln_2(hidden_states)
 
-        hidden_states, router_logits, aux_loss = self.moe(hidden_states)
+        # hidden_states, router_logits, aux_loss = self.moe(hidden_states)
 
-        if self.m_residual is not None:
-            hidden_states = hidden_states * self.m_residual
+        # if self.m_residual is not None:
+        #     hidden_states = hidden_states * self.m_residual
 
-        # residual connection
-        hidden_states = hidden_states + residual
+        # # residual connection
+        # hidden_states = hidden_states + residual
 
         outputs = (hidden_states,)
 
