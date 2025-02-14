@@ -76,6 +76,7 @@ class ABFScaledRoPE(RoPE):
     def _get_inv_freq(self, seq_len) -> torch.Tensor:
         base = self.base
         if seq_len > self.max_position_embeddings:
+            assert False, "EXTENDAING!"
             base = base * seq_len / self.max_position_embeddings
         return 1.0 / (base ** (torch.arange(0, self.head_dim, 2, dtype=torch.float32) / self.head_dim))
 
