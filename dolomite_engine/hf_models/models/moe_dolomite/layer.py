@@ -65,8 +65,8 @@ class MoEDolomiteBlock(nn.Module):
         # if self.m_residual is not None:
         #     hidden_states = hidden_states * self.m_residual
 
-        # residual connection
-        hidden_states = hidden_states + residual
+        # # residual connection
+        # hidden_states = hidden_states + residual
 
         # residual = hidden_states
         # hidden_states = self.ln_2(hidden_states)
