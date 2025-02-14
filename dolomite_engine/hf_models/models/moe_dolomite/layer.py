@@ -78,6 +78,8 @@ class MoEDolomiteBlock(nn.Module):
 
         # # residual connection
         # hidden_states = hidden_states + residual
+        router_logits = 0
+        aux_loss = 0
 
         outputs = (hidden_states,)
 
