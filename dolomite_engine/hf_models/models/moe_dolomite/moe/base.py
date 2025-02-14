@@ -141,7 +141,7 @@ class MoE(nn.Module):
 
     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
 
-        return hidden_states
+        return hidden_states, None, 0
         
         if not self.use_padding_free_transformer:
             batch_size, sequence_length, _ = hidden_states.shape
