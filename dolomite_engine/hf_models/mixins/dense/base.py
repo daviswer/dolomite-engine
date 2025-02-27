@@ -499,26 +499,31 @@ class BaseModelMixin(PreTrainedModelMixin):
 
             self.alibi = Alibi(self.num_heads)
         elif self.position_embedding_type == PositionEmbeddingType.rope:
-            if self.config.rope_scaling is None:
-                self.rope = RoPE(
-                    self.head_dim,
-                    max_position_embeddings=max_position_embeddings,
-                    base=self.config.rope_theta,
-                )
-            elif self.config.rope_scaling == "abf":
-                self.rope = ABFScaledRoPE(
-                    self.head_dim,
-                    max_position_embeddings=max_position_embeddings,
-                    base=self.config.rope_theta,
-                )
-            else:
-                self.rope = YaRNScaledRoPE(
-                    self.head_dim,
-                    max_position_embeddings=max_position_embeddings,
-                    base=self.config.rope_theta,
-                    scale=self.config.rope_scaling["factor"],
-                    original_max_position_embeddings=self.config.rope_scaling["original_max_position_embeddings"],
-                )
+            self.rope = ABFScaledRoPE(
+                self.head_dim,
+                max_position_embeddings=max_position_embeddings,
+                base=self.config.rope_theta,
+            )
+            # if self.config.rope_scaling is None:
+            #     self.rope = RoPE(
+            #         self.head_dim,
+            #         max_position_embeddings=max_position_embeddings,
+            #         base=self.config.rope_theta,
+            #     )
+            # elif self.config.rope_scaling == "abf":
+            #     self.rope = ABFScaledRoPE(
+            #         self.head_dim,
+            #         max_position_embeddings=max_position_embeddings,
+            #         base=self.config.rope_theta,
+            #     )
+            # else:
+            #     self.rope = YaRNScaledRoPE(
+            #         self.head_dim,
+            #         max_position_embeddings=max_position_embeddings,
+            #         base=self.config.rope_theta,
+            #         scale=self.config.rope_scaling["factor"],
+            #         original_max_position_embeddings=self.config.rope_scaling["original_max_position_embeddings"],
+            #     )
         elif self.position_embedding_type == PositionEmbeddingType.nope:
             pass
         else:
