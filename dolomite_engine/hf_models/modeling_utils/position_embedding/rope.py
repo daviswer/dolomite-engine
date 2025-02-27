@@ -57,6 +57,23 @@ class RoPE(nn.Module):
 
 class ABFScaledRoPE(RoPE):
     verbed = False
+
+    @torch.no_grad()
+    def _set_cos_sin_cache(self, seq_len: int, dtype: torch.dtype) -> None:
+        self.max_seq_len_cached = seq_len
+
+        inv_freq = self._get_inv_freq(seq_len)  # Need to pass the arg here, otherwise same as parent class
+        t = torch.arange(self.max_seq_len_cached, dtype=torch.float32)
+
+        freqs = torch.outer(t, inv_freq)
+
+        # Different from paper, but it uses a different permutation in order to obtain the same calculation
+        emb = torch.cat((freqs, freqs), dim=-1)
+
+        device = self.cos_cached.device if hasattr(self, "cos_cached") else None
+
+        self.register_buffer("cos_cached", (emb.cos() * self.mscale).to(device=device, dtype=dtype), persistent=False)
+        self.register_buffer("sin_cached", (emb.sin() * self.mscale).to(device=device, dtype=dtype), persistent=False)
     
     def _get_inv_freq(self, seq_len) -> torch.Tensor:
         base = self.base
