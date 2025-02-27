@@ -499,7 +499,7 @@ class BaseModelMixin(PreTrainedModelMixin):
 
             self.alibi = Alibi(self.num_heads)
         elif self.position_embedding_type == PositionEmbeddingType.rope:
-            self.rope = ABFScaledRoPE(
+            self.rope = RoPE(
                 self.head_dim,
                 max_position_embeddings=max_position_embeddings,
                 base=self.config.rope_theta,
