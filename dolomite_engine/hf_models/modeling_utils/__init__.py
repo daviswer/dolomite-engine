@@ -13,7 +13,7 @@ from .mlp_blocks import (
     split_up_gate_tensor_for_mlp,
 )
 from .normalization import get_normalization_function
-from .position_embedding import RoPE, YaRNScaledRoPE, apply_rotary_pos_emb
+from .position_embedding import RoPE, ABFScaledRoPE, YaRNScaledRoPE, apply_rotary_pos_emb
 from .sequence_mixer_blocks import (
     SDPA,
     Attention,

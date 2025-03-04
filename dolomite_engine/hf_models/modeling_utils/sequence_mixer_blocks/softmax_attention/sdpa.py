@@ -34,8 +34,8 @@ class SDPA(Attention):
             query = apply_rotary_pos_emb(query, rope_cos_sin)
             key = apply_rotary_pos_emb(key, rope_cos_sin)
 
-        if past_key_values is not None:
-            key, value = past_key_values.update(key, value, self.layer_idx)
+        # if past_key_values is not None:
+        #     key, value = past_key_values.update(key, value, self.layer_idx)
 
         # ==========================================================================================
         # query -> (batch_size, num_heads, query_length, head_dim)

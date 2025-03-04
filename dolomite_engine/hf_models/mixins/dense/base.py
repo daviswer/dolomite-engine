@@ -8,7 +8,7 @@ from ...cache import HybridMambaAttentionDynamicCache
 from ...config import CommonConfig
 from ...enums import PositionEmbeddingType
 from ...loss import clear_aux_loss
-from ...modeling_utils import ParameterizedEmbedding, RoPE, YaRNScaledRoPE, get_normalization_function
+from ...modeling_utils import ParameterizedEmbedding, RoPE, ABFScaledRoPE, YaRNScaledRoPE, get_normalization_function
 from ...utils import convert_padding_free_lists_to_tensors, is_generation_cache_enabled
 
 
@@ -32,7 +32,7 @@ class PreTrainedModelMixin(PreTrainedModel):
 
         assert self.config_class is not None
 
-        self.attention_implementation = self.config._attn_implementation
+        self.attention_implementation = "sdpa"  # self.config._attn_implementation
         self._use_eager_attention = self.attention_implementation == "eager"
         self._use_sdpa = self.attention_implementation == "sdpa"
         self._use_flash_attention_2 = self.attention_implementation == "flash_attention_2"
@@ -450,20 +450,31 @@ class BaseModelMixin(PreTrainedModelMixin):
         if self.position_embedding_type == PositionEmbeddingType.learned_absolute:
             self.wpe = ParameterizedEmbedding(max_position_embeddings, self.embed_dim, std=self.initializer_range)
         elif self.position_embedding_type == PositionEmbeddingType.rope:
-            if self.config.rope_scaling is None:
-                self.rope = RoPE(
-                    self.head_dim,
-                    max_position_embeddings=max_position_embeddings,
-                    base=self.config.rope_theta,
-                )
-            else:
-                self.rope = YaRNScaledRoPE(
-                    self.head_dim,
-                    max_position_embeddings=max_position_embeddings,
-                    base=self.config.rope_theta,
-                    scale=self.config.rope_scaling["factor"],
-                    original_max_position_embeddings=self.config.rope_scaling["original_max_position_embeddings"],
-                )
+            self.rope = ABFScaledRoPE(
+                self.head_dim,
+                max_position_embeddings=max_position_embeddings,
+                base=self.config.rope_theta,
+            )
+            # if self.config.rope_scaling is None:
+            #     self.rope = RoPE(
+            #         self.head_dim,
+            #         max_position_embeddings=max_position_embeddings,
+            #         base=self.config.rope_theta,
+            #     )
+            # elif self.config.rope_scaling == "abf":
+            #     self.rope = ABFScaledRoPE(
+            #         self.head_dim,
+            #         max_position_embeddings=max_position_embeddings,
+            #         base=self.config.rope_theta,
+            #     )
+            # else:
+            #     self.rope = YaRNScaledRoPE(
+            #         self.head_dim,
+            #         max_position_embeddings=max_position_embeddings,
+            #         base=self.config.rope_theta,
+            #         scale=self.config.rope_scaling["factor"],
+            #         original_max_position_embeddings=self.config.rope_scaling["original_max_position_embeddings"],
+            #     )
         elif self.position_embedding_type == PositionEmbeddingType.nope:
             pass
         else:
